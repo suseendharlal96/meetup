@@ -113,18 +113,29 @@
           console.log(err);
         });
     }
-    // dispatch("add", {
-    //   showForm: false,
-    //   loader: true
-    // });
   }
 
   function deleteMeetup() {
-    meetups.deleteMeetup(formData.id);
-    dispatch("add", {
-      showForm: false,
-      loader: true
-    });
+    console.log("DELETE");
+    fetch(
+      `https://meetup-svelte-74ea9.firebaseio.com/meetups/${formData.id}.json`,
+      {
+        method: "DELETE"
+      }
+    )
+      .then(res => {
+        if (!res.ok) {
+          throw new Error("Failed");
+        }
+        meetups.deleteMeetup(formData.id);
+        dispatch("add", {
+          showForm: false,
+          loader: true
+        });
+      })
+      .catch(err => {
+        console.log(err);
+      });
   }
 </script>
 
