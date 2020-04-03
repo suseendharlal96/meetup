@@ -33,7 +33,6 @@
 
   const dispatch = createEventDispatcher();
 
-  // onMount(() => {
   console.log(formData);
   if (formData) {
     title = formData.title;
@@ -45,7 +44,6 @@
     address = formData.address;
     email = formData.email;
   }
-  // });
 
   function addData() {
     const newMeetup = {
