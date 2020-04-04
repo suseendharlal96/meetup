@@ -16,6 +16,8 @@
   let imageUrl = "";
   let id = "";
   let showForm = null;
+  let changing = false;
+  let deleting = false;
 
   $: titleValid = isEmpty(title);
   $: subtitleValid = isEmpty(subtitle);
@@ -55,6 +57,7 @@
       address: address
     };
     if (formData) {
+      changing = true;
       fetch(
         `https://meetup-svelte-74ea9.firebaseio.com/meetups/${formData.id}.json`,
         {
@@ -73,12 +76,14 @@
           meetups.editMeetup(formData.id, newMeetup);
           dispatch("add", {
             showForm: false,
-            loader: true
+            loader: false
           });
         })
         .catch(err => {
+          changing = false;
         });
     } else {
+      changing = true;
       fetch("https://meetup-svelte-74ea9.firebaseio.com/meetups.json", {
         method: "POST",
         body: JSON.stringify(newMeetup),
@@ -97,15 +102,18 @@
           meetups.addMeetup(newMeetup);
           dispatch("add", {
             showForm: false,
-            loader: true
+            loader: false
           });
+          changing = false;
         })
         .catch(err => {
+          changing = false;
         });
     }
   }
 
   function deleteMeetup() {
+    deleting = true;
     fetch(
       `https://meetup-svelte-74ea9.firebaseio.com/meetups/${formData.id}.json`,
       {
@@ -119,10 +127,12 @@
         meetups.deleteMeetup(formData.id);
         dispatch("add", {
           showForm: false,
-          loader: true
+          loader: false
         });
+        deleting = false;
       })
       .catch(err => {
+        deleting = false;
       });
   }
 </script>
@@ -180,9 +190,11 @@
     No
   </label>
   <div class="actions">
-    <Button type="submit" mode="outline" disabled={!formIsValid}>Save</Button>
+    <Button type="submit" mode="outline" disabled={!formIsValid}>
+      {changing ? 'Saving...' : 'Save'}
+    </Button>
     <Button mode="outline" on:click={deleteMeetup} disabled={!formData}>
-      Delete
+      {deleting ? 'Deleting...' : 'Delete'}
     </Button>
   </div>
 </form>

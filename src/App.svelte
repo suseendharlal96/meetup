@@ -41,7 +41,7 @@
     });
 
   function shouldFormShow(event) {
-    activeTitle = "Add Meetup";
+    // activeTitle = "Add Meetup";
     form = event.detail.showForm;
     editMode = event.detail.showForm;
     loader = event.detail.loader;
