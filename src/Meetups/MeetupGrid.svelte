@@ -5,6 +5,7 @@
   export let meetups;
   console.log(meetups);
   let isFavourite = false;
+  let actualMeetups;
   $: actualMeetups = isFavourite
     ? meetups.filter(data => data.isFavorite === true)
     : meetups;
@@ -12,9 +13,31 @@
   function setFav(val) {
     if (val === 1) {
       isFavourite = true;
+      document.getElementById("search").value = "";
     } else {
+      document.getElementById("search").value = "";
       isFavourite = false;
     }
+  }
+
+  function searchMeetup(event) {
+    let meetup;
+    if (!isFavourite) {
+      meetup = [...meetups];
+    } else {
+      meetup = meetups.filter(data => data.isFavorite === true);
+    }
+    const filteredMeetup = meetup.filter(data => {
+      if (
+        data.title
+          .toLowerCase()
+          .replace(/\s/g, "")
+          .startsWith(event.target.value.toLowerCase().replace(/\s/g, ""))
+      ) {
+        return data;
+      }
+    });
+    actualMeetups = filteredMeetup;
   }
 </script>
 
@@ -28,8 +51,13 @@
 
   .filter {
     padding-top: 2rem;
-    width: 50%;
+    width: 98.5%;
     display: block;
+  }
+
+  .search {
+    float: right;
+    margin-left: 15px;
   }
 
   @media (min-width: 768px) {
@@ -52,6 +80,15 @@
     on:click={() => setFav(1)}>
     Favorites
   </Button>
+  <label class="search" for="search">
+    Search:
+    <input
+      class="search"
+      id="search"
+      placeholder="search meetups"
+      on:keyup={searchMeetup}
+      type="text" />
+  </label>
 </div>
 <section id="meetups">
   {#each actualMeetups as meetup}
