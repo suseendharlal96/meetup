@@ -12,7 +12,7 @@
   let address = "";
   let email = "";
   let description = "";
-  let isFavorite = "";
+  let isFavorite = false;
   let imageUrl = "";
   let id = "";
   let showForm = null;
@@ -33,7 +33,6 @@
 
   const dispatch = createEventDispatcher();
 
-  console.log(formData);
   if (formData) {
     title = formData.title;
     subtitle = formData.subtitle;
@@ -56,8 +55,6 @@
       address: address
     };
     if (formData) {
-      console.log(formData);
-      console.log("EDIT");
       fetch(
         `https://meetup-svelte-74ea9.firebaseio.com/meetups/${formData.id}.json`,
         {
@@ -72,7 +69,6 @@
           if (!res.ok) {
             throw new Error("Failed");
           }
-          console.log(newMeetup);
           newMeetup.id = formData.id;
           meetups.editMeetup(formData.id, newMeetup);
           dispatch("add", {
@@ -81,11 +77,8 @@
           });
         })
         .catch(err => {
-          console.log(err);
         });
     } else {
-      console.log("CREATE");
-      newMeetup.isFavorite = false;
       fetch("https://meetup-svelte-74ea9.firebaseio.com/meetups.json", {
         method: "POST",
         body: JSON.stringify(newMeetup),
@@ -108,13 +101,11 @@
           });
         })
         .catch(err => {
-          console.log(err);
         });
     }
   }
 
   function deleteMeetup() {
-    console.log("DELETE");
     fetch(
       `https://meetup-svelte-74ea9.firebaseio.com/meetups/${formData.id}.json`,
       {
@@ -132,7 +123,6 @@
         });
       })
       .catch(err => {
-        console.log(err);
       });
   }
 </script>
@@ -142,6 +132,10 @@
     width: 30rem;
     max-width: 90%;
     margin: auto;
+  }
+
+  .actions {
+    margin-top: 10px;
   }
 </style>
 
@@ -178,6 +172,17 @@
     controlType="textarea"
     value={description}
     on:input={event => (description = event.target.value)} />
-  <Button type="submit" mode="outline" disabled={!formIsValid}>Save</Button>
-  <Button mode="outline" on:click={deleteMeetup}>Delete</Button>
+  <label for="favorite">
+    Favorite?
+    <input type="radio" name="fav" value={true} bind:group={isFavorite} />
+    Yes
+    <input type="radio" name="fav" value={false} bind:group={isFavorite} />
+    No
+  </label>
+  <div class="actions">
+    <Button type="submit" mode="outline" disabled={!formIsValid}>Save</Button>
+    <Button mode="outline" on:click={deleteMeetup} disabled={!formData}>
+      Delete
+    </Button>
+  </div>
 </form>

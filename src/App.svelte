@@ -15,9 +15,9 @@
   let formData;
   let detailId = null;
   let noData = true;
-
-  // onMount(() => {
+  let activeTitle = "Meetup";
   loader = true;
+
   fetch("https://meetup-svelte-74ea9.firebaseio.com/meetups.json")
     .then(res => {
       if (!res.ok) {
@@ -39,9 +39,9 @@
     .catch(err => {
       loader = false;
     });
-  // });
 
   function shouldFormShow(event) {
+    activeTitle = "Add Meetup";
     form = event.detail.showForm;
     editMode = event.detail.showForm;
     loader = event.detail.loader;
@@ -53,8 +53,10 @@
   function showDetails(event) {
     detailId = event.detail;
     showDetail = true;
+    activeTitle = "Meetup Details";
   }
   function editMeetup(event) {
+    activeTitle = "Edit Meetup";
     form = event.detail.form;
     editMode = event.detail.form;
     const editData = {
@@ -65,15 +67,26 @@
       description: event.detail.description,
       isFav: event.detail.isFav,
       address: event.detail.address,
-      email: event.detail.email,
+      email: event.detail.email
     };
     formData = editData;
-    console.log(formData);
   }
 
   function toggleMode() {
     form = !form;
     editMode = false;
+    if (form && editMode) {
+      activeTitle = "Edit Meetup";
+    } else if (form) {
+      activeTitle = "Add Meetup";
+    } else {
+      activeTitle = "Meetup";
+    }
+  }
+
+  function closeDetailView() {
+    showDetail = false;
+    activeTitle = "Meetup";
   }
 
   function filterFav(event) {
@@ -88,7 +101,9 @@
 </style>
 
 <Header />
-
+<svelte:head>
+  <title>{activeTitle}</title>
+</svelte:head>
 <main>
   <!-- {#if !loader} -->
   {#if !showDetail}
@@ -116,10 +131,7 @@
       <h1>Loading.....</h1>
     {/if}
   {:else}
-    <MeetupDetail
-      meetups={$meetups}
-      {detailId}
-      on:close={() => (showDetail = false)} />
+    <MeetupDetail meetups={$meetups} {detailId} on:close={closeDetailView} />
   {/if}
 
 </main>

@@ -10,12 +10,8 @@ const customMeetup = {
     console.log(meetupData);
   },
   addMeetup: meetup => {
-    const newMeetup = {
-      ...meetup,
-      isFavorite: false
-    };
     meetups.update(data => {
-      return [newMeetup, ...data];
+      return [meetup, ...data];
     });
   },
   editMeetup: (id, meetup) => {
@@ -23,7 +19,6 @@ const customMeetup = {
     meetups.update(items => {
       console.log(items);
       const updateIndex = items.findIndex(data => data.id === id);
-      // const updatedMeetup = { ...items[meetupIndex], ...meetup };
       const updatedMeetups = [...items];
       updatedMeetups[updateIndex] = meetup;
       return updatedMeetups;

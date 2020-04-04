@@ -1,3 +1,5 @@
 export function isEmpty(value) {
-  return value.trim().length !== 0;
+  if (typeof value === "string") {
+    return value.trim().length !== 0;
+  }
 }
