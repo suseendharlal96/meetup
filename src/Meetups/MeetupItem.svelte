@@ -12,10 +12,12 @@
   export let address;
   export let email;
   export let isFav;
+  let isChanging = false;
 
   const dispatch = createEventDispatcher();
 
   function toggleFavorite() {
+    isChanging = true;
     fetch(`https://meetup-svelte-74ea9.firebaseio.com/meetups/${id}.json`, {
       method: "PATCH",
       body: JSON.stringify({ isFavorite: !isFav }),
@@ -28,8 +30,10 @@
           throw new Error("Failed");
         }
         meetups.toggleFavorite(id);
+        isChanging = false;
       })
       .catch(err => {
+        isChanging = false;
         console.log(err);
       });
   }
@@ -129,7 +133,7 @@
       type="button"
       color={isFav ? null : 'success'}
       on:click={toggleFavorite}>
-      {isFav ? 'Unfavorite' : 'Favorite'}
+      {isChanging ? 'Changing...' : isFav ? 'Unfavorite' : 'Favorite'}
     </Button>
     <Button type="button" on:click={() => dispatch('showDetails', id)}>
       Show Details
