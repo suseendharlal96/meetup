@@ -7,7 +7,6 @@
   import EditMeetup from "./Meetups/EditMeetup.svelte";
   import MeetupDetail from "./Meetups/MeetupDetail.svelte";
 
-  let meetupsData = [];
   let loader = true;
   let form = false;
   let editMode = false;

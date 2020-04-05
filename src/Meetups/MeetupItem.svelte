@@ -55,12 +55,12 @@
 
   .image {
     width: 100%;
-    height: 14rem;
+    height: 20rem;
   }
 
   .image img {
     width: 100%;
-    height: 14rem;
+    height: 24rem;
   }
 
   h1 {
